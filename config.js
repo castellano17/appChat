@@ -1,10 +1,10 @@
 //! const dotenv = require('dotenv')
 //! dotenv.config()
 
-require('dotenv').config()
+require("dotenv").config();
 
 const config = {
-  port: process.env.PORT || 5000,
+  port: process.env.PORT || 9000,
   nodeEnv: process.env.NODE_ENV || "dev", //? dev, prod, test
   jwtSecret: process.env.JWT_SECRET,
   db: {
@@ -55,6 +55,9 @@ const config = {
       },
     },
   },
+  api: {
+    emailPass: process.env.EMAIL_PASS,
+  },
 };
 
-module.exports = config
+module.exports = config;
