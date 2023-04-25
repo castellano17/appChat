@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 
 const db = require("../utils/database");
-//const Users = require("./users.models");
+const Users = require("./users.models");
 
 const Conversations = db.define("conversations", {
   id: {
@@ -12,13 +12,21 @@ const Conversations = db.define("conversations", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  profileImage:{
-    type: DataTypes.STRING
+  profileImage: {
+    type: DataTypes.STRING,
   },
   isGroup: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false
-  }
+    defaultValue: false,
+  },
+  createBy: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    references: {
+      key: "id",
+      model: Users,
+    },
+  },
 });
 
-module.exports = Conversations
+module.exports = Conversations;
