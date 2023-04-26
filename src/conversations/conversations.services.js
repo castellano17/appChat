@@ -8,7 +8,7 @@ const getAllConversations = (req, res) => {
       res.status(200).json(data);
     })
     .catch((err) => {
-      res.status(400).json({ message: err.message });
+      res.status(400).json({ err: err.message });
     });
 };
 
@@ -16,7 +16,7 @@ const getConversationById = (req, res) => {
   const id = req.params.conversation_id;
 
   conversationsControllers
-    .getConversationById(id)
+    .findConversationsById(id)
     .then((data) => {
       if (data) {
         res.status(200).json(data);
@@ -31,12 +31,12 @@ const getConversationById = (req, res) => {
 
 const postConversation = (req, res) => {
   const { name, profileImage } = req.body;
-  const createdBy = req.user.id;
+  const userId = req.user.id;
   conversationsControllers
     .createConversation({
       name,
       profileImage,
-      createdBy,
+      userId,
     })
     .then((data) => {
       res.status(201).json(data);

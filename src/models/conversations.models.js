@@ -14,17 +14,18 @@ const Conversations = db.define("conversations", {
   },
   profileImage: {
     type: DataTypes.STRING,
+    allowNull: true,
   },
   isGroup: {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },
-  createBy: {
+  userId: {
     type: DataTypes.UUID,
     allowNull: false,
     references: {
-      key: "id",
       model: Users,
+      key: "id",
     },
   },
 });

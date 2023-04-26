@@ -1,10 +1,13 @@
 const uuid = require("uuid");
 const Conversations = require("../models/conversations.models");
 
-const findAllConversations = async (createdBy) => {
+const findAllConversations = async (userId) => {
   const conversations = await Conversations.findAll({
     where: {
-      createdBy: createdBy,
+      userId: userId,
+    },
+    attributes: {
+      exclude: ["userId", "createdAt", "updatedAt"],
     },
   }); // Trae las conversaciones del usuario
   return conversations;
@@ -15,17 +18,21 @@ const findConversationsById = async (id) => {
     where: {
       id: id,
     },
+    attributes: {
+      exclude: ["userId", "createdAt", "updatedAt"],
+    },
   });
   return data;
 };
 
-const createConversation = async (conversationObject, createdBy) => {
+const createConversation = async (conversationObject, userId) => {
   const newConversation = {
     id: uuid.v4(),
     name: conversationObject.name,
     profileImage: conversationObject.profileImage,
-    createdBy: createdBy,
+    userId: conversationObject.userId,
   };
+  // console.log(conversationObject);
   const data = await Conversations.create(newConversation);
   return data;
 };
