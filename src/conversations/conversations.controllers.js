@@ -1,5 +1,6 @@
 const uuid = require("uuid");
 const Conversations = require("../models/conversations.models");
+const Participants = require("../models/participants.models");
 
 const findAllConversations = async (userId) => {
   const conversations = await Conversations.findAll({
@@ -26,14 +27,23 @@ const findConversationsById = async (id) => {
 };
 
 const createConversation = async (conversationObject, userId) => {
-  const newConversation = {
+  const data = await Conversations.create({
     id: uuid.v4(),
     name: conversationObject.name,
     profileImage: conversationObject.profileImage,
     userId: conversationObject.userId,
-  };
-  // console.log(conversationObject);
-  const data = await Conversations.create(newConversation);
+  });
+
+  await Participants.create({
+    id: uuid.v4(),
+    conversationId: data.id,
+    userId: conversationObject.userId,
+  });
+  await Participants.create({
+    id: uuid.v4(),
+    conversationId: data.id,
+    userId: conversationObject.ParticipantId,
+  });
   return data;
 };
 
