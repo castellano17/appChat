@@ -1,6 +1,8 @@
 const uuid = require("uuid");
 const Conversations = require("../models/conversations.models");
 const Participants = require("../models/participants.models");
+const Users = require("../models/users.models");
+const Messages = require("../models/messages.models");
 
 const findAllConversations = async (userId) => {
   const conversations = await Conversations.findAll({
@@ -10,6 +12,22 @@ const findAllConversations = async (userId) => {
     attributes: {
       exclude: ["userId", "createdAt", "updatedAt"],
     },
+    include: [
+      {
+        model: Participants,
+        attributes: {
+          exclude: ["createdAt", "updatedAt"],
+        },
+        include: [
+          {
+            model: Messages,
+            attributes: {
+              exclude: ["createdAt", "updatedAt"],
+            },
+          },
+        ],
+      },
+    ],
   }); // Trae las conversaciones del usuario
   return conversations;
 };
@@ -27,10 +45,17 @@ const findConversationsById = async (id) => {
 };
 
 const createConversation = async (conversationObject, userId) => {
+  const userGuest = await Users.findOne({
+    where: {
+      id: conversationObject.guestId,
+    },
+  });
+  if (!userGuest) return false;
   const data = await Conversations.create({
     id: uuid.v4(),
     name: conversationObject.name,
     profileImage: conversationObject.profileImage,
+    isGroup: conversationObject.isGroup,
     userId: conversationObject.userId,
   });
 
@@ -38,11 +63,13 @@ const createConversation = async (conversationObject, userId) => {
     id: uuid.v4(),
     conversationId: data.id,
     userId: conversationObject.userId,
+    isAdmin: true,
   });
   await Participants.create({
     id: uuid.v4(),
     conversationId: data.id,
-    userId: conversationObject.ParticipantId,
+    userId: conversationObject.guestId,
+    isAdmin: false,
   });
   return data;
 };

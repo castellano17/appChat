@@ -1,14 +1,15 @@
 const Conversations = require("../models/conversations.models");
 const Messages = require("../models/messages.models");
 const uuid = require("uuid");
+const Participants = require("../models/participants.models");
 
 const getMsgByConversationId = async (conversationId) => {
   const data = await Messages.findAll({
     where: {
-      conversationId,
+      conversationId: conversationId,
     },
     order: [
-      ["userId", "ASC"],
+      ["name", "ASC"],
       ["createdAt", "DESC"],
     ],
     attributes: {
@@ -16,8 +17,8 @@ const getMsgByConversationId = async (conversationId) => {
     },
     include: [
       {
-        model: Conversations,
-        attributes: ["name"],
+        model: Participants,
+        where: { conversationId },
       },
     ],
   });
@@ -28,10 +29,9 @@ const createMessage = async (data, userId) => {
   // console.log(data);
   const response = await Messages.create({
     id: uuid.v4(),
-    userId: userId,
+    // userId: userId,
     content: data.content,
     participantId: data.participantId,
-    conversationId: data.conversationId,
   });
   return response;
 };

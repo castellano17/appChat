@@ -1,8 +1,7 @@
-const messagesControllers = require("./messages.controllers");
 const messageControllers = require("./messages.controllers");
 
 const getMsgByConversationId = (req, res) => {
-  const { id: conversationId } = req.params;
+  const conversationId = req.params.id;
   messageControllers
     .getMsgByConversationId(conversationId)
     .then((data) => {
@@ -14,12 +13,12 @@ const getMsgByConversationId = (req, res) => {
 };
 
 const createMessage = (req, res) => {
-  const userId = req.user.id; //? Este es el id del usuario loggeado
+  // const userId = req.user.id; //? Este es el id del usuario loggeado
   const { content, participantId } = req.body;
-  const conversationId = req.params.id;
+  // const conversationId = req.params.id;
   if (content && participantId) {
     messageControllers
-      .createMessage({ content, participantId, conversationId }, userId)
+      .createMessage({ content, participantId })
       .then((data) => {
         res.status(201).json(data);
       })
@@ -38,10 +37,11 @@ const createMessage = (req, res) => {
 };
 
 const getMsgByMessageId = (req, res) => {
-  const { id: conversationId, messageId } = req.params;
-  console.log({ conversationId, messageId });
+  const { messageId, participantId } = req.params.id;
+
+  console.log({ participantId, messageId });
   messageControllers
-    .getMsgByMessageId(messageId, conversationId)
+    .getMsgByMessageId(messageId, participantId)
     .then((data) => {
       res.status(200).json(data);
     })

@@ -30,14 +30,14 @@ const getConversationById = (req, res) => {
 };
 
 const postConversation = (req, res) => {
-  const { name, profileImage, ParticipantId } = req.body;
+  const { name, profileImage, guestId } = req.body;
   const userId = req.user.id;
   conversationsControllers
     .createConversation({
       name,
       profileImage,
       userId,
-      ParticipantId,
+      guestId,
     })
     .then((data) => {
       res.status(201).json(data);
@@ -48,6 +48,7 @@ const postConversation = (req, res) => {
         fields: {
           name: "String",
           profileImage: "String",
+          guestId: "String",
         },
       });
     });
